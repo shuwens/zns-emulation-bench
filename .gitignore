@@ -1,0 +1,34 @@
+# dev
+venv/
+.cache/
+.vscode/
+
+# dep
+lib/
+spdk/
+simpleznsdevice/
+civetweb-1.16/
+civetweb-v1.16.tar.gz
+subprojects/spdk*
+subprojects/xnvme
+boost_1_86_0.tar.bz2
+boost_1_86_0/
+
+# build
+build
+builddir
+rw_test
+bdev_test
+nvme_test
+zstore
+current_zone
+zstore1.log
+zstore4.log
+
+run.sh
+cpuprofile.file
+
+paths.txt
+vault-benchmarking/
+wrk-scripts/
+test/
