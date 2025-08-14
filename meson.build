@@ -136,6 +136,14 @@ spdk_paths += zookeeper_path
 # https://spdk.io/doc/pkgconfig.html
 spdk_link_args = ['-Wl,--no-as-needed'] + spdk_paths + ['-Wl,--as-needed']
 
+executable(
+	'verify',
+	files('examples/multipath/verification.cc'),
+	dependencies: [zstore_deps] + [dependency('_spdk')],
+	link_args: spdk_link_args,
+	install: true,
+)
+
 # nvmf multipath signle drive
 executable(
 	'mpsd_append',

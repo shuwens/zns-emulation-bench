@@ -3,7 +3,7 @@
 set -xeuo pipefail
 
 zstore_dir=$(git rev-parse --show-toplevel)
-source $zstore_dir/.env
+# source $zstore_dir/.env
 source $zstore_dir/scripts/network_env.sh
 
 cd $zstore_dir/subprojects/spdk
