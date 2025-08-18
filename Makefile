@@ -36,6 +36,10 @@ install-boost:
 	sudo ldconfig
 	# remember to add /etc/ld.so.conf.d/boost.conf with /usr/local/lib in it
 
+install-rdma:
+	sudo apt-get -y --force-yes install rdma-core ibverbs-utils infiniband-diags
+
+
 install-deps:
 	sudo apt install -y meson nvme-cli net-tools
 	sudo apt install -y clang-18 lld-18 cmake

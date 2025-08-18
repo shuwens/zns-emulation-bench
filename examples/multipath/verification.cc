@@ -17,7 +17,7 @@
 using chrono_tp = std::chrono::high_resolution_clock::time_point;
 // NOTE that here the nqn is zstore2. This is unique per node. We are talking
 // to 12.12.12.2
-static const char *g_hostnqn = "nqn.2024-04.io.zstore3:cnode1";
+static const char *g_hostnqn = "nqn.2024-04.io.zstore5:cnode1";
 
 bool starting_lba = false;
 
@@ -920,7 +920,7 @@ static void zns_dev_init(struct arb_context *ctx, std::string ip1,
 static int register_controllers(struct arb_context *ctx) {
   printf("Initializing NVMe Controllers\n");
 
-  zns_dev_init(ctx, "12.12.12.3", "5520");
+  zns_dev_init(ctx, "12.12.12.5", "5520");
 
   if (g_arbitration.num_namespaces == 0) {
     fprintf(stderr, "No valid namespaces to continue IO testing\n");
