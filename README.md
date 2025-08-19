@@ -3,12 +3,26 @@
 
 ## Device under test
 
+We have tested the following three NVMe SSDs.
 
 | Device | Model | Capacity | Description | Read speed (GB/s) | Write speed (GB/s) | Read IOPS | Write IOPS |
 |--------|-------|----------|-------------| ----------|-------------|----|---------- |
 | Non-ZNS NVMe | Samsung MZ-PLL1T60 | 1.6 TB | Conventional SSD | - | - | 1000k IOPS | 140k IOPS |
 | Non-ZNS NVMe | SK hynix Platinum P41/PC801 | 500 GB | Conventional SSD | 7.0 GB/s | 6.8 GB/s | 960k IOPS | 1000k IOPS |
 | ZNS NVMe | WD Ultrastar DC ZN540 | 4 TB | ZNS SSD | 3.2 GB/s | 2.0 GB/s | 450k IOPS | 180k IOPS |
+
+They are deployed on the following ZStore nodes:
+
+| Server | SSD model | Number |
+|--------|-----------|--------|
+| ZStore 2 | ZNS SSD| 2 |
+| ZStore 2 | SK SSD| 2 |
+| ZStore 3 | ZNS SSD| 2 |
+| ZStore 3 | SK SSD| 2 |
+| ZStore 6 | Samsung SSD | 2 |
+
+
+
 
 ## FAQ
 
