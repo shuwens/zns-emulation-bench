@@ -62,6 +62,9 @@ scripts/rpc.py bdev_zone_block_create -b zone0 -n "$nvme1"n1 -z 262144 -o 16
 scripts/rpc.py bdev_zone_block_create -b zone1 -n "$nvme2"n1 -z 262144 -o 16
 
 # List all bdevs
+
+
+if [[ "${DEBUG:-}" == "true" ]]; then
 # Get information about all bdevs (including zone devices)
 ./scripts/rpc.py bdev_get_bdevs
 
@@ -70,7 +73,7 @@ scripts/rpc.py bdev_zone_block_create -b zone1 -n "$nvme2"n1 -z 262144 -o 16
 
 # You can also format the output as JSON for easier parsing
 ./scripts/rpc.py bdev_get_bdevs -b zone1 | python -m json.tool
-
+fi
 
 # scripts/rpc.py nvmf_create_transport -t TCP -u 16384 -m 8 -c 8192
 # scripts/rpc.py nvmf_create_transport -t RDMA -u 8192 -i 131072 -c 8192
