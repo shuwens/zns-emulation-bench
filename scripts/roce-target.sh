@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -xeuo pipefail
 
+if [ $# -eq 0 ]; then
+	echo "No emulation option, using ZNS SSDs"
+	mode="ZNS"
+else
+	echo "Emulation argument provided, using conventional SSDs"
+	mode="Emulation"
+fi
+
+
 zstore_dir=$(git rev-parse --show-toplevel)
 # source "$zstore_dir"/.env
 source "$zstore_dir"/scripts/network_env.sh
@@ -21,40 +30,63 @@ HUGEMEM=4096 ./scripts/setup.sh
 sleep 3
 
 if [ "$HOSTNAME" == "zstore2" ]; then
-	pci1=06:00.0
-	pci2=0c:00.0
+	if [ "$mode" == "ZNS" ]; then
+		pci1=05:00.0
+		pci2=07:00.0
+	else
+		pci1=06:00.0
+		pci2=0c:00.0
+	fi
 	ctrl_nqn="nqn.2024-04.io.zstore2:cnode1"
-./scripts/rpc.py bdev_nvme_attach_controller -b nvme2 -t PCIe -a "$pci1"
-./scripts/rpc.py bdev_nvme_attach_controller -b nvme4 -t PCIe -a "$pci2"
-./scripts/rpc.py bdev_zone_block_create -b zone0 -n nvme2n1 -z 262144 -o 16
-./scripts/rpc.py bdev_zone_block_create -b zone1 -n nvme4n1 -z 262144 -o 16
 elif [ "$HOSTNAME" == "zstore3" ]; then
-	pci1=02:00.0
-	pci2=0c:00.0
+	if [ "$mode" == "ZNS" ]; then
+		pci1=05:00.0
+		pci2=07:00.0
+	else
+		pci1=02:00.0
+		pci2=0c:00.0
+	fi
 	ctrl_nqn="nqn.2024-04.io.zstore3:cnode1"
 elif [ "$HOSTNAME" == "zstore4" ]; then
-	pci1=06:00.0
-	pci2=0c:00.0
+	if [ "$mode" == "ZNS" ]; then
+		pci1=06:00.0
+		pci2=0c:00.0
+	else
+		pci1=06:00.0
+		pci2=0c:00.0
+	fi
 	ctrl_nqn="nqn.2024-04.io.zstore4:cnode1"
 elif [ "$HOSTNAME" == "zstore5" ]; then
-	pci1=06:00.0
-	pci2=0c:00.0
+	if [ "$mode" == "ZNS" ]; then
+		pci1=05:00.0
+		pci2=06:00.0
+	else
+		pci1=06:00.0
+		pci2=0c:00.0
+	fi
+	pci1=05:00.0
 	ctrl_nqn="nqn.2024-04.io.zstore5:cnode1"
-elif [ "$HOSTNAME" == "zstore6" ]; then
-	pci1=06:00.0
-	pci2=07:00.0
-	ctrl_nqn="nqn.2024-04.io.zstore6:cnode1"
 fi
 
-# List all bdevs
-# Get information about all bdevs (including zone devices)
-./scripts/rpc.py bdev_get_bdevs
+scripts/rpc.py bdev_nvme_attach_controller -b nvme0 -t PCIe -a "$pci1" 
+scripts/rpc.py bdev_nvme_attach_controller -b nvme1 -t PCIe -a "$pci2" 
+
+if [ "$mode" == "Emulation" ]; then
+	# ./scripts/rpc.py bdev_zone_create -b zone0 -n nvme0n1 -z 128 -c 1024 -o 0
+	# ./scripts/rpc.py bdev_zone_block_create -b zone0 -n nvme0n1 -z 128 -o 16
+	# ./scripts/rpc.py bdev_zone_block_create -b zone1 -n nvme1n1 -z 128 -o 16
+	./scripts/rpc.py bdev_zone_block_create -b zone0 -n nvme0n1 -z 262144 -o 16
+	./scripts/rpc.py bdev_zone_block_create -b zone1 -n nvme1n1 -z 262144 -o 16
+	# List all bdevs
+	# Get information about all bdevs (including zone devices)
+	./scripts/rpc.py bdev_get_bdevs
 
 # Get information about a specific zone device
 ./scripts/rpc.py bdev_get_bdevs -b zone0
 
 # You can also format the output as JSON for easier parsing
 ./scripts/rpc.py bdev_get_bdevs -b zone0 | python -m json.tool
+fi
 
 
 # scripts/rpc.py nvmf_create_transport -t TCP -u 16384 -m 8 -c 8192
@@ -85,16 +117,21 @@ if [ "$HOSTNAME" == "zstore1" ]; then
 elif [ "$HOSTNAME" == "zstore2" ]; then
 	scripts/rpc.py nvmf_create_subsystem "$ctrl_nqn" -a -s SPDK02 -d SPDK_Controller2 -m 8
 	sleep 1
-	scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" zone0
-	scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" zone1
+	scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" nvme0n2
+	scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" nvme1n2
 	scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a 12.12.12.2 -s 5520
 	scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a 12.12.12.2 -s 5521
 	scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a 12.12.12.2 -s 5522
 elif [ "$HOSTNAME" == "zstore3" ]; then
 	scripts/rpc.py nvmf_create_subsystem "$ctrl_nqn" -a -s SPDK02 -d SPDK_Controller2 -m 8
 	sleep 1
-	scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" zone0
-	scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" zone1
+	if [ "$mode" == "ZNS" ]; then
+		scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" nvme0n2
+		scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" nvme1n2
+		else
+		scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" zone0
+		scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" zone1
+	fi
 	scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a 12.12.12.3 -s 5520
 	scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a 12.12.12.3 -s 5521
 	scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a 12.12.12.3 -s 5522
@@ -119,3 +156,4 @@ fi
 scripts/rpc.py framework_set_scheduler dynamic
 
 wait
+

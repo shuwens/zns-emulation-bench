@@ -23,8 +23,8 @@ if [[ $(hostname) == "zstore1" ]]; then
 	sudo ifconfig enp1s0 12.12.12.1/24 up
 	sudo ifconfig enp1s0 mtu 4200
 elif [ "$HOSTNAME" == "zstore2" ]; then
-	sudo ifconfig enp1s0 12.12.12.2/24 up
-	sudo ifconfig enp1s0 mtu 4200
+	sudo ifconfig enp1s0f0np0 12.12.12.2/24 up
+	sudo ifconfig enp1s0f0np0 mtu 4200
 elif [ "$HOSTNAME" == "zstore3" ]; then
 	sudo ifconfig enp1s0f0np0 12.12.12.3/24 up
 	sudo ifconfig enp1s0f0np0 mtu 4200
