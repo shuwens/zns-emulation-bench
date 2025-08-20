@@ -1,5 +1,9 @@
 # zns-emulation-bench
 
+## Start guide
+
+To check all SSD devices, run `lspci -vv | grep NVMe`
+
 
 ## Device under test
 
@@ -22,6 +26,9 @@ They are deployed on the following ZStore nodes:
 | ZStore 6 | Samsung SSD | 2 |
 
 
+## Results
+
+[grouped bar chart](graphs/1_grouped_bar_chart.pdf)
 
 
 ## FAQ
