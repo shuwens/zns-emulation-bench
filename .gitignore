@@ -32,3 +32,5 @@ paths.txt
 vault-benchmarking/
 wrk-scripts/
 test/
+
+.DS_Store
