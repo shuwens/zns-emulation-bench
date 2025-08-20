@@ -97,12 +97,10 @@ sleep 1
 scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" zone0
 scripts/rpc.py nvmf_subsystem_add_ns "$ctrl_nqn" zone1
 
-# Add listeners
-ip_suffix=${HOSTNAME: -1}
-log_info "Adding NVMf listeners on 12.12.12.$ip_suffix"
-for port in 5520 5521 5522; do
-	scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a "12.12.12.$ip_suffix" -s "$port"
-done
+scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a 12.12.12.3 -s 5520
+scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a 12.12.12.3 -s 5521
+scripts/rpc.py nvmf_subsystem_add_listener "$ctrl_nqn" -t RDMA -f ipv4 -a 12.12.12.3 -s 5522
+
 
 scripts/rpc.py framework_set_scheduler dynamic
 
