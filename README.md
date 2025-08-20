@@ -28,7 +28,9 @@ They are deployed on the following ZStore nodes:
 
 ## Results
 
-[grouped bar chart](graphs/1_grouped_bar_chart.pdf)
+
+![SSD Performance Comparison: Append vs Read Operations](graphs/1_grouped_bar_chart.png)
+![SSD Performance Summary Table](graphs/6_summary_table.png)
 
 
 ## FAQ
