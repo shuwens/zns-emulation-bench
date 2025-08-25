@@ -9,7 +9,7 @@ import numpy as np
 # Data
 ssd_types = ["SK Hynix", "Samsung", "ZNS"]
 append_iops = [169702.00, 173172, 297746.5]
-read_iops = [437204, 140949, 43289]
+read_iops = [437204, 140949, 349782]
 
 # Set consistent style
 plt.style.use("default")

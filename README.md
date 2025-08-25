@@ -1,5 +1,16 @@
 # zns-emulation-bench
 
+## SPDK ZNS Emulation
+
+SPDK has added API to create emulated zones on conventional and Open
+channel SSDs. From SPDK 24.09 CHANGELOG:
+```
+A new RPC, `bdev_zone_block_create`, enables creating an emulated zoned bdev on top of a standard block device.
+A new RPC, `bdev_ocssd_create`, enables creating an emulated zoned bdev on top of an Open Channel SSD.
+```
+
+
+
 ## Start guide
 
 To check all SSD devices, run `lspci -vv | grep NVMe`

@@ -1,6 +1,11 @@
 .DEFAULT_GOAL := debug
 .PHONY: setup setup-debug release debug paper clean
 
+plots:
+	python graphs/iops_separate_plots.py
+	mv *.png graphs/
+	mv *.pdf graphs/
+
 setup:
 	rm -rf build* || true
 	meson setup --native-file meson.ini build-rel --buildtype=release -Db_sanitize=none
@@ -38,7 +43,6 @@ install-boost:
 
 install-rdma:
 	sudo apt-get -y --force-yes install rdma-core ibverbs-utils infiniband-diags
-
 
 install-deps:
 	sudo apt install -y meson nvme-cli net-tools
